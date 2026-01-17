@@ -109,8 +109,8 @@ FRONTEND_URL=http://localhost:3000
 
 **frontend/.env**:
 ```
-REACT_APP_API_URL=http://localhost:5000
-REACT_APP_SOCKET_URL=http://localhost:5000
+REACT_APP_API_URL=api
+REACT_APP_SOCKET_URL=api
 ```
 
 3. Seed database:
@@ -125,7 +125,7 @@ npm run dev
 ```
 
 Frontend: http://localhost:3000
-Backend: http://localhost:5000
+Backend: api
 
 ## SMS Configuration (Optional)
 

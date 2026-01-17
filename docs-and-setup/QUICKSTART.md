@@ -30,7 +30,7 @@ npm run dev
 
 That's it! The app will open at:
 - **Frontend**: http://localhost:3000
-- **Backend**: http://localhost:5000
+- **Backend**: api
 
 ### Step 3: Login & Test
 

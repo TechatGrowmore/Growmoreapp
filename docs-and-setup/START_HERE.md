@@ -233,8 +233,8 @@ FRONTEND_URL=http://localhost:3000
 
 ### Frontend (.env already created)
 ```env
-REACT_APP_API_URL=http://localhost:5000
-REACT_APP_SOCKET_URL=http://localhost:5000
+REACT_APP_API_URL=api
+REACT_APP_SOCKET_URL=api
 ```
 
 ---

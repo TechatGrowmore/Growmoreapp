@@ -41,10 +41,10 @@ backend/uploads/car-images/
 
 Images can be accessed via:
 ```
-http://localhost:5000/uploads/{filename}
+api/uploads/{filename}
 ```
 
-Example: `http://localhost:5000/uploads/car-1705488765432-123456789.jpg`
+Example: `api/uploads/car-1705488765432-123456789.jpg`
 
 ## Storage Requirements
 

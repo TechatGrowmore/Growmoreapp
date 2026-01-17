@@ -77,7 +77,7 @@ A complete, production-ready application with:
 
 5. **Test the App**
    - Frontend: http://localhost:3000
-   - Backend: http://localhost:5000
+   - Backend: api
    - Login as Driver: 9999999999 / driver123
 
 ### 📚 Important Files
