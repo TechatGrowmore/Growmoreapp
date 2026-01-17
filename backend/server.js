@@ -10,30 +10,38 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
+
+// ✅ Socket.io setup
 const io = socketIo(server, {
   cors: {
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-// Middleware
+// ✅ Middleware
 app.use(helmet());
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL,
+    'http://localhost:3000'
+  ].filter(Boolean),
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
+// ✅ Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100
 });
 app.use('/api/', limiter);
 
-// MongoDB Connection
+// ✅ MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -41,10 +49,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('✓ MongoDB Connected'))
 .catch(err => console.error('MongoDB Connection Error:', err));
 
-// Make io accessible to routes
+// ✅ Make io accessible to routes
 app.set('io', io);
 
-// Socket.io connection handling
+// ✅ Socket.io connection handling
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
@@ -60,7 +68,7 @@ io.on('connection', (socket) => {
 
   socket.on('join-supervisor', (supervisorId) => {
     socket.join(`supervisor-${supervisorId}`);
-    socket.join('supervisors'); // All supervisors room
+    socket.join('supervisors');
     console.log(`Supervisor ${supervisorId} joined`);
   });
 
@@ -69,45 +77,51 @@ io.on('connection', (socket) => {
   });
 });
 
-// Routes
+// ✅ Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/venues', require('./routes/venues'));
 
-// Serve uploaded images
+// ✅ Serve uploaded images
 const { UPLOAD_PATH } = require('./config/imageUpload');
 app.use('/uploads', express.static(UPLOAD_PATH));
 
-// Health check
+// ✅ Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Valetez API is running' });
+  res.json({ status: 'OK', message: 'Valetez API is running ✅' });
 });
 
-// Serve static files in production
+// ✅ Serve React frontend in production (Render fix)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'public')));
-  
-  // Handle React routing
+  // CRA build path: /frontend/build
+  const buildPath = path.join(__dirname, '..', 'frontend', 'build');
+
+  // Serve static React files
+  app.use(express.static(buildPath));
+
+  // React Router support
   app.get('*', (req, res) => {
     // Skip API routes
     if (req.path.startsWith('/api')) {
       return res.status(404).json({ message: 'API endpoint not found' });
     }
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+    res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
 
-// Error handling middleware
+// ✅ Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!', 
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`✓ Server running on port ${PORT}`);
