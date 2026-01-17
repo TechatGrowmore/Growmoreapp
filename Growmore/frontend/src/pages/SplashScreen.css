@@ -1,0 +1,87 @@
+.splash-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #fff5f2 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.splash-screen::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.logo-container {
+  margin-bottom: 30px;
+}
+
+.logo-icon {
+  filter: drop-shadow(0 4px 20px rgba(255, 107, 53, 0.3));
+}
+
+.app-name {
+  font-size: 64px;
+  font-weight: 800;
+  color: #FF6B35;
+  letter-spacing: -2px;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(255, 107, 53, 0.2);
+}
+
+.tagline {
+  font-size: 18px;
+  color: #666;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  background-color: #FF6B35;
+  border-radius: 50%;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .app-name {
+    font-size: 48px;
+  }
+  
+  .tagline {
+    font-size: 16px;
+  }
+  
+  .logo-icon {
+    width: 100px;
+    height: 100px;
+  }
+}

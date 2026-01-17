@@ -1,0 +1,156 @@
+.customer-content {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #666;
+  gap: 15px;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  color: #1A1A1A;
+  margin: 10px 0 5px;
+}
+
+.bookings-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.booking-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.booking-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.booking-header h3 {
+  font-size: 16px;
+  color: #1A1A1A;
+  margin: 0 0 5px;
+  font-weight: 700;
+}
+
+.booking-time {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+}
+
+.booking-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.eta-banner, .otp-banner, .completed-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+.eta-banner {
+  background: #EFF6FF;
+  color: #3B82F6;
+  border-left: 4px solid #3B82F6;
+}
+
+.otp-banner {
+  background: #FEF3C7;
+  color: #92400E;
+  border-left: 4px solid #F59E0B;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.otp-banner strong {
+  font-size: 24px;
+  color: #FF6B35;
+  letter-spacing: 2px;
+}
+
+.completed-banner {
+  background: #F0FDF4;
+  color: #166534;
+  border-left: 4px solid #10B981;
+}
+
+.recall-btn {
+  width: 100%;
+  padding: 14px;
+  background: #FF6B35;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 15px;
+}
+
+.recall-btn:hover {
+  background: #E85A24;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+@media (max-width: 768px) {
+  .customer-content {
+    padding: 20px;
+  }
+  
+  .bookings-grid {
+    grid-template-columns: 1fr;
+  }
+}

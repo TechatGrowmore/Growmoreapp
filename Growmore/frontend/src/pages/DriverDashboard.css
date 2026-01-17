@@ -1,0 +1,158 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  background: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-left h2 {
+  font-size: 20px;
+  color: #1A1A1A;
+  margin: 0;
+  font-weight: 700;
+}
+
+.header-left p {
+  font-size: 14px;
+  color: #666;
+  margin: 2px 0 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notification-badge {
+  position: relative;
+  padding: 8px 12px;
+  background: #FFF5F2;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #FF6B35;
+}
+
+.notification-badge span {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #EF4444;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #FF6B35;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #E85A24;
+  transform: translateY(-2px);
+}
+
+.dashboard-nav {
+  background: white;
+  padding: 15px 30px;
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #E0E0E0;
+  overflow-x: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #666;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background: #FFF5F2;
+  color: #FF6B35;
+}
+
+.nav-item.active {
+  background: #FF6B35;
+  color: white;
+  border-color: #FF6B35;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 30px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 15px 20px;
+  }
+  
+  .header-left h2 {
+    font-size: 18px;
+  }
+  
+  .header-left p {
+    font-size: 12px;
+  }
+  
+  .logout-btn span {
+    display: none;
+  }
+  
+  .dashboard-nav {
+    padding: 10px 20px;
+  }
+  
+  .nav-item span {
+    display: none;
+  }
+  
+  .dashboard-content {
+    padding: 20px;
+  }
+}

@@ -1,0 +1,114 @@
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
+
+// Middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api/', limiter);
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✓ MongoDB Connected'))
+.catch(err => console.error('MongoDB Connection Error:', err));
+
+// Make io accessible to routes
+app.set('io', io);
+
+// Socket.io connection handling
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+
+  socket.on('join-driver', (driverId) => {
+    socket.join(`driver-${driverId}`);
+    console.log(`Driver ${driverId} joined`);
+  });
+
+  socket.on('join-customer', (customerId) => {
+    socket.join(`customer-${customerId}`);
+    console.log(`Customer ${customerId} joined`);
+  });
+
+  socket.on('join-supervisor', (supervisorId) => {
+    socket.join(`supervisor-${supervisorId}`);
+    socket.join('supervisors'); // All supervisors room
+    console.log(`Supervisor ${supervisorId} joined`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/venues', require('./routes/venues'));
+
+// Serve uploaded images
+const { UPLOAD_PATH } = require('./config/imageUpload');
+app.use('/uploads', express.static(UPLOAD_PATH));
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Valetez API is running' });
+});
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'public')));
+  
+  // Handle React routing
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return res.status(404).json({ message: 'API endpoint not found' });
+    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+}
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!', 
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
+});
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`✓ Server running on port ${PORT}`);
+});

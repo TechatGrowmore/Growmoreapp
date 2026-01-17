@@ -1,0 +1,127 @@
+.admin-dashboard {
+  min-height: 100vh;
+  background: #F8F9FA;
+}
+
+.dashboard-header {
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-section h2 {
+  font-size: 24px;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.logo-section p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #FF6B35;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #E85A28;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.dashboard-nav {
+  display: flex;
+  gap: 8px;
+  padding: 20px 40px;
+  background: white;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #6B7280;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 8px 8px 0 0;
+}
+
+.nav-item:hover {
+  color: #FF6B35;
+  background: rgba(255, 107, 53, 0.05);
+}
+
+.nav-item.active {
+  color: #FF6B35;
+  border-bottom-color: #FF6B35;
+  background: rgba(255, 107, 53, 0.05);
+}
+
+.dashboard-content {
+  padding: 30px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 15px 20px;
+  }
+
+  .logo-section h2 {
+    font-size: 20px;
+  }
+
+  .dashboard-nav {
+    padding: 15px 20px;
+    overflow-x: auto;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+}
