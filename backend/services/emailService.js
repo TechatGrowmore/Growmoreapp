@@ -1,44 +1,17 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 class EmailService {
   constructor() {
-    this.emailEnabled = !!(
-      process.env.EMAIL_HOST &&
-      process.env.EMAIL_USER &&
-      process.env.EMAIL_PASS
-    );
+    this.emailEnabled = !!process.env.RESEND_API_KEY;
+
+    this.fromEmail = process.env.EMAIL_FROM || "onboarding@resend.dev";
+    this.fromName = process.env.EMAIL_FROM_NAME || "Growmore Parking";
 
     if (this.emailEnabled) {
-      const port = Number(process.env.EMAIL_PORT || 465);
-
-      this.transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST, // smtpout.secureserver.net
-        port,
-        secure: port === 465, // ✅ MUST true for 465
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false, // ✅ IMPORTANT for cloud deploy (Render)
-        },
-      });
-
-      this.fromEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER;
-      this.fromName = process.env.EMAIL_FROM_NAME || "Growmore Parking";
-
-      // ✅ Verify SMTP config on startup
-      this.transporter.verify((err, success) => {
-        if (err) {
-          console.error("❌ Email SMTP Verify Failed:", err.message);
-        } else {
-          console.log("✅ Email SMTP Verified successfully");
-        }
-      });
-
-      console.log("✓ Email Service initialized");
+      this.resend = new Resend(process.env.RESEND_API_KEY);
+      console.log("✅ Email Service initialized (Resend API)");
     } else {
-      console.log("⚠ Email Service running in MOCK mode");
+      console.log("⚠ Email Service running in MOCK mode (RESEND_API_KEY missing)");
     }
   }
 
@@ -47,25 +20,24 @@ class EmailService {
       console.log("\n📧 MOCK EMAIL:");
       console.log(`To: ${to}`);
       console.log(`Subject: ${subject}`);
-      console.log(`Content: ${(text || html).substring(0, 120)}...`);
+      console.log(`Content: ${(text || "").slice(0, 120)}...`);
       console.log("─────────────────────────────\n");
       return { success: true, mock: true };
     }
 
     try {
-      const mailOptions = {
+      const result = await this.resend.emails.send({
         from: `${this.fromName} <${this.fromEmail}>`,
-        to,
+        to: Array.isArray(to) ? to : [to],
         subject,
         html,
         text: text || html.replace(/<[^>]*>/g, ""),
-      };
+      });
 
-      const result = await this.transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent to ${to}: ${result.messageId}`);
-      return { success: true, messageId: result.messageId };
+      console.log("✅ Email sent:", result?.data?.id);
+      return { success: true, id: result?.data?.id };
     } catch (error) {
-      console.error("❌ Email Error:", error);
+      console.error("❌ Resend Email Error:", error.message);
       return { success: false, error: error.message };
     }
   }
@@ -75,11 +47,18 @@ class EmailService {
     const html = `
       <!DOCTYPE html>
       <html>
-      <body style="font-family: Arial, sans-serif;">
-        <h2>Hello ${customerName}!</h2>
-        <p>Your OTP is:</p>
-        <h1 style="letter-spacing: 5px;">${otp}</h1>
-        <p><b>Valid for 10 minutes.</b> Do not share this code with anyone.</p>
+      <body style="font-family: Arial, sans-serif; color:#111;">
+        <div style="max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:12px;">
+          <h2>Hello ${customerName} 👋</h2>
+          <p>Your OTP is:</p>
+          <div style="font-size:32px;font-weight:bold;letter-spacing:6px;padding:12px 0;">
+            ${otp}
+          </div>
+          <p><b>Valid for 10 minutes.</b> Do not share this code with anyone.</p>
+          <p style="font-size:12px;color:#666;margin-top:30px;">
+            © 2026 Growmore Parking
+          </p>
+        </div>
       </body>
       </html>
     `;
@@ -91,12 +70,13 @@ class EmailService {
     const subject = `Booking Confirmed - ${bookingId}`;
     const html = `
       <h2>Hello ${customerName}!</h2>
-      <p>Your booking is confirmed.</p>
+      <p>Your parking booking has been confirmed ✅</p>
       <p><b>Booking ID:</b> ${bookingId}</p>
       <p><b>Vehicle:</b> ${vehicleNumber}</p>
       ${venue ? `<p><b>Venue:</b> ${venue}</p>` : ""}
-      <p><a href="${recallLink}">Access booking</a></p>
+      <p><a href="${recallLink}">Open Booking</a></p>
     `;
+
     return this.sendEmail(email, subject, html);
   }
 
@@ -104,9 +84,10 @@ class EmailService {
     const subject = `Your Car is On the Way - ${bookingId}`;
     const html = `
       <h2>Hello ${customerName}!</h2>
-      <p>Your car is being brought to you.</p>
+      <p>Your car is being brought to you 🚗</p>
       <h3>ETA: ${estimatedTime} minutes</h3>
     `;
+
     return this.sendEmail(email, subject, html);
   }
 
@@ -114,10 +95,11 @@ class EmailService {
     const subject = `Your Car Has Arrived! - ${bookingId}`;
     const html = `
       <h2>Hello ${customerName}!</h2>
-      <p>Your car has arrived at the pickup point.</p>
-      <p>Share this OTP with valet:</p>
-      <h2 style="letter-spacing: 5px;">${otp}</h2>
+      <p>Your car has arrived at the pickup point ✅</p>
+      <p>Share this OTP with the valet:</p>
+      <h2 style="letter-spacing:6px;">${otp}</h2>
     `;
+
     return this.sendEmail(email, subject, html);
   }
 }
