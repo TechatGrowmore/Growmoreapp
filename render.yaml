@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: valetez
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: EMAIL_HOST
+        value: smtpout.secureserver.net
+      - key: EMAIL_PORT
+        value: 465
+      - key: EMAIL_USER
+        value: tech@growmoreparking.com
+      - key: EMAIL_PASS
+        sync: false
+      - key: EMAIL_FROM
+        value: tech@growmoreparking.com
+      - key: EMAIL_FROM_NAME
+        value: Valetez Parking
+      - key: MSG91_AUTH_KEY
+        sync: false
+      - key: MSG91_SENDER_ID
+        value: VLTZVA
+      - key: MSG91_TEMPLATE_ID
+        sync: false
+      - key: FRONTEND_URL
+        value: https://valetez.onrender.com
+      - key: PORT
+        value: 10000
