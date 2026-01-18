@@ -11,6 +11,7 @@ const app = express();
 // ✅ REQUIRED for Render / reverse proxy (fix express-rate-limit X-Forwarded-For error)
 app.set("trust proxy", 1);
 const server = http.createServer(app);
+const emailService = require("./services/emailService");
 
 // ✅ Socket.io setup
 const io = socketIo(server, {
@@ -93,6 +94,30 @@ app.use('/uploads', express.static(UPLOAD_PATH));
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Valetez API is running ✅' });
 });
+// ✅ TEST EMAIL API (temporary)
+app.get("/api/test-email", async (req, res) => {
+  try {
+    const to = req.query.to || process.env.TEST_EMAIL_TO;
+
+    if (!to) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide ?to=email@example.com OR set TEST_EMAIL_TO in env"
+      });
+    }
+
+    const result = await emailService.sendEmail(
+      to,
+      "Test Email from Render ✅",
+      "<h2>Hello from Render</h2><p>Email system is working!</p>"
+    );
+
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error("Test Email Error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // ✅ Serve React frontend in production (Render fix)
 if (process.env.NODE_ENV === 'production') {
@@ -120,19 +145,6 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
-});
-app.get("/api/test-email", async (req, res) => {
-  try {
-    const result = await emailService.sendEmail(
-      "YOUR_EMAIL@gmail.com",
-      "Test Email from Render ✅",
-      "<h2>Hello from Render</h2><p>Email is working!</p>"
-    );
-
-    res.json({ success: true, result });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
 });
 
 // ✅ Start server
