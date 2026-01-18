@@ -15,22 +15,24 @@ class EmailService {
         ? process.env.EMAIL_SECURE === "true"
         : port === 465;
 
-      this.transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port,
-        secure,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-        tls: {
-          rejectUnauthorized: process.env.EMAIL_TLS_REJECT_UNAUTHORIZED
-            ? process.env.EMAIL_TLS_REJECT_UNAUTHORIZED === "true"
-            : false,
-        },
-        logger: process.env.EMAIL_DEBUG === "true",
-        debug: process.env.EMAIL_DEBUG === "true",
-      });
+    this.transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port,
+      secure,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+
+      // ✅ add these
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
+    });
+
 
       this.fromEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER;
       this.fromName = process.env.EMAIL_FROM_NAME || "Valetez Parking";
