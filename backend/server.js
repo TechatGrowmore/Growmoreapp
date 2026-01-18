@@ -7,8 +7,9 @@ const rateLimit = require('express-rate-limit');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
-
 const app = express();
+// ✅ REQUIRED for Render / reverse proxy (fix express-rate-limit X-Forwarded-For error)
+app.set("trust proxy", 1);
 const server = http.createServer(app);
 
 // ✅ Socket.io setup
