@@ -121,6 +121,19 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
+app.get("/api/test-email", async (req, res) => {
+  try {
+    const result = await emailService.sendEmail(
+      "YOUR_EMAIL@gmail.com",
+      "Test Email from Render ✅",
+      "<h2>Hello from Render</h2><p>Email is working!</p>"
+    );
+
+    res.json({ success: true, result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
