@@ -1,76 +1,77 @@
-const nodemailer = require("nodemailer");
+// ✅ Brevo Email Service (API based - works on Render)
 
 class EmailService {
   constructor() {
-    this.emailEnabled = !!(
-      process.env.EMAIL_HOST &&
-      process.env.EMAIL_USER &&
-      process.env.EMAIL_PASS
-    );
+    this.apiEnabled = !!process.env.BREVO_API_KEY;
 
-    if (this.emailEnabled) {
-      const port = parseInt(process.env.EMAIL_PORT || "587", 10);
+    this.fromEmail = process.env.EMAIL_FROM || "ravin@growmoreparking.com";
+    this.fromName = process.env.EMAIL_FROM_NAME || "Growmore Parking";
 
-      const secure = process.env.EMAIL_SECURE
-        ? process.env.EMAIL_SECURE === "true"
-        : port === 465;
-
-    this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port,
-      secure,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-
-      // ✅ add these
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 20000,
-    });
-
-
-      this.fromEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER;
-      this.fromName = process.env.EMAIL_FROM_NAME || "Valetez Parking";
-
-      console.log(
-        `✓ Email Service initialized (host=${process.env.EMAIL_HOST}, port=${port}, secure=${secure})`
-      );
+    if (this.apiEnabled) {
+      console.log("✓ Email Service initialized (Brevo API mode ✅)");
     } else {
-      console.log("⚠ Email Service running in MOCK mode");
+      console.log("⚠ Email Service running in MOCK mode (BREVO_API_KEY missing)");
     }
   }
 
-  // ✅ Base send email function
+  // ✅ Base send email via Brevo API
   async sendEmail(to, subject, html, text = null) {
-    if (this.emailEnabled) {
-      try {
-        const mailOptions = {
-          from: `${this.fromName} <${this.fromEmail}>`,
-          to,
-          subject,
-          html,
-          text: text || html.replace(/<[^>]*>/g, ""),
-        };
-
-        const result = await this.transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent to ${to}: ${result.messageId}`);
-        return { success: true, messageId: result.messageId };
-      } catch (error) {
-        console.error("❌ Email Error:", error);
-        return { success: false, error: error.message };
-      }
-    } else {
+    if (!this.apiEnabled) {
       console.log("\n📧 MOCK EMAIL:");
       console.log(`To: ${to}`);
       console.log(`Subject: ${subject}`);
       console.log(`Content: ${text || html.substring(0, 200)}...`);
       console.log("─────────────────────────────\n");
       return { success: true, mock: true };
+    }
+
+    try {
+      console.log("📨 [BREVO] Sending email...");
+      console.log("To:", to);
+      console.log("From:", this.fromEmail);
+      console.log("Subject:", subject);
+
+      const payload = {
+        sender: {
+          name: this.fromName,
+          email: this.fromEmail,
+        },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+        textContent: text || undefined,
+      };
+
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      console.log("📩 [BREVO] Status:", response.status);
+      console.log("📩 [BREVO] Response:", data);
+
+      if (!response.ok) {
+        console.error("❌ Brevo API error:", data);
+        return {
+          success: false,
+          error: data.message || "Brevo API error",
+          details: data,
+          status: response.status,
+        };
+      }
+
+      console.log(`✅ [BREVO] Email sent successfully to ${to}`);
+      return { success: true, result: data };
+    } catch (error) {
+      console.error("❌ Brevo sendEmail exception:", error);
+      return { success: false, error: error.message };
     }
   }
 
@@ -97,7 +98,7 @@ class EmailService {
       <p>You can track your booking here:</p>
       <p><a href="${accessLink}" target="_blank">${accessLink}</a></p>
       <br/>
-      <p>Thanks,<br/>Valetez Parking</p>
+      <p>Thanks,<br/>Growmore Parking</p>
     `;
 
     return await this.sendEmail(toEmail, subject, html);
@@ -115,7 +116,7 @@ class EmailService {
       <p><b>Booking ID:</b> ${bookingId}</p>
       <p><b>Estimated Arrival:</b> ${estimatedMinutes} minutes</p>
       <br/>
-      <p>Thanks,<br/>Valetez Parking</p>
+      <p>Thanks,<br/>Growmore Parking</p>
     `;
 
     return await this.sendEmail(toEmail, subject, html);
@@ -136,7 +137,7 @@ class EmailService {
       <br/>
       <p><b>Note:</b> Do not share OTP with anyone except the driver.</p>
       <br/>
-      <p>Thanks,<br/>Valetez Parking</p>
+      <p>Thanks,<br/>Growmore Parking</p>
     `;
 
     return await this.sendEmail(toEmail, subject, html);
