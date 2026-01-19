@@ -14,9 +14,7 @@
 3. Create a database user
 4. Whitelist all IP addresses (0.0.0.0/0) for Render
 5. Get your connection string:
-   ```
-   mongodb+srv://username:password@cluster.mongodb.net/growmore?retryWrites=true&w=majority
-   ```
+   ```   ```
 
 ### Step 2: Push to GitHub
 
