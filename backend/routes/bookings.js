@@ -9,6 +9,8 @@ const emailService = require('../services/emailService');
 const { upload } = require('../config/imageUpload');
 const { uploadMultipleFiles } = require('../config/googleDrive');
 
+console.log('📋 Booking routes module loaded with enhanced logging - v2.0');
+
 // Generate OTP for verification
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
