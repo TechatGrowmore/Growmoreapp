@@ -51,6 +51,10 @@ router.post('/',
         valuables
       } = req.body;
 
+      console.log('=== Creating New Booking ===');
+      console.log('Customer:', { name: customerName, phone: customerPhone, email: customerEmail || 'No email' });
+      console.log('Vehicle:', { type: vehicleType, number: vehicleNumber });
+
       // Parse valuables if it's a JSON string
       let valuablesList = [];
       if (valuables) {
@@ -66,7 +70,7 @@ router.post('/',
       if (req.files && req.files.length > 0) {
         console.log(`Uploading ${req.files.length} images to Google Drive...`);
         imageUrls = await uploadMultipleFiles(req.files);
-        console.log('Images uploaded:', imageUrls);
+        console.log('Images uploaded successfully:', imageUrls);
       }
 
       const booking = new Booking({
@@ -99,7 +103,7 @@ router.post('/',
       await booking.save();
       await booking.populate('driver', 'name phone');
 
-      console.log('Booking created:', { 
+      console.log('Booking created successfully:', { 
         id: booking._id, 
         bookingId: booking.bookingId, 
         driver: booking.driver._id,
@@ -109,27 +113,45 @@ router.post('/',
 
       // Generate direct access link with token
       const accessLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/customer/access/${booking.accessToken}`;
+      console.log('Access link generated:', accessLink);
 
       // Send Email to customer (if email provided)
       if (customerEmail) {
-        await emailService.sendBookingConfirmation(
-          customerEmail,
-          customerName,
-          booking.bookingId,
-          accessLink,
-          vehicleNumber,
-          venue
-        );
+        console.log(`Sending booking confirmation email to: ${customerEmail}`);
+        try {
+          await emailService.sendBookingConfirmation(
+            customerEmail,
+            customerName,
+            booking.bookingId,
+            accessLink,
+            vehicleNumber,
+            venue
+          );
+          console.log('✓ Booking confirmation email sent successfully to:', customerEmail);
+        } catch (emailError) {
+          console.error('✗ Failed to send email to:', customerEmail, emailError.message);
+        }
+      } else {
+        console.log('No email provided - skipping email notification');
       }
 
       // Send SMS to customer (backup notification or primary if no email)
-      await smsService.sendBookingConfirmation(customerPhone, booking.bookingId, accessLink);
+      console.log(`Sending booking confirmation SMS to: ${customerPhone}`);
+      try {
+        await smsService.sendBookingConfirmation(customerPhone, booking.bookingId, accessLink);
+        console.log('✓ Booking confirmation SMS sent successfully to:', customerPhone);
+      } catch (smsError) {
+        console.error('✗ Failed to send SMS to:', customerPhone, smsError.message);
+      }
 
       // Emit to supervisor dashboard
       const io = req.app.get('io');
       io.to('supervisors').emit('new-booking', {
         booking: booking.toObject()
       });
+      console.log('New booking event emitted to supervisors');
+
+      console.log('=== Booking Creation Complete ===\n');
 
       res.status(201).json({
         message: 'Booking created successfully',
@@ -304,12 +326,15 @@ router.post('/:id/recall', auth, authorize('customer'), async (req, res) => {
     booking.recall.requestedAt = new Date();
     await booking.save();
 
+    console.log('Customer recall requested:', { bookingId: booking.bookingId, customer: booking.customer.phone });
+
     // Notify driver via socket
     const io = req.app.get('io');
     io.to(`driver-${booking.driver}`).emit('recall-request', {
       bookingId: booking.bookingId,
       booking: booking.toObject()
     });
+    console.log('Recall notification sent to driver via socket');
 
     res.json({ 
       message: 'Recall request sent to driver',
@@ -341,6 +366,8 @@ router.post('/:id/driver-recall', auth, authorize('driver'), async (req, res) =>
     booking.status = 'recall-requested';
     booking.recall.requestedAt = new Date();
     await booking.save();
+
+    console.log('Driver initiated recall:', { bookingId: booking.bookingId, driver: req.user._id });
 
     res.json({ 
       message: 'Recall initiated. Set arrival time.',
@@ -375,29 +402,51 @@ router.post('/:id/estimate-arrival', auth, authorize('driver'), async (req, res)
     booking.recall.estimatedArrival = parseInt(estimatedMinutes);
     await booking.save();
 
-    // Notify customer
+    console.log('=== Setting Estimated Arrival Time ===');
+    console.log('Booking ID:', booking.bookingId);
+    console.log('Estimated arrival:', estimatedMinutes, 'minutes');
+    console.log('Customer:', booking.customer.phone);
+
+    // Notify customer via socket
     const io = req.app.get('io');
     io.to(`customer-${booking.customer.phone}`).emit('car-in-transit', {
       bookingId: booking.bookingId,
       estimatedMinutes
     });
+    console.log('In-transit notification sent to customer via socket');
 
     // Send Email notification (if email available)
     if (booking.customer.email) {
-      await emailService.sendRecallNotification(
-        booking.customer.email,
-        booking.customer.name,
-        booking.bookingId,
-        estimatedMinutes
-      );
+      console.log(`Sending recall notification email to: ${booking.customer.email}`);
+      try {
+        await emailService.sendRecallNotification(
+          booking.customer.email,
+          booking.customer.name,
+          booking.bookingId,
+          estimatedMinutes
+        );
+        console.log('✓ Recall notification email sent successfully to:', booking.customer.email);
+      } catch (emailError) {
+        console.error('✗ Failed to send recall email to:', booking.customer.email, emailError.message);
+      }
+    } else {
+      console.log('No email available - skipping email notification');
     }
 
     // Send SMS notification (backup or primary if no email)
-    await smsService.sendRecallNotification(
-      booking.customer.phone,
-      booking.bookingId,
-      estimatedMinutes
-    );
+    console.log(`Sending recall notification SMS to: ${booking.customer.phone}`);
+    try {
+      await smsService.sendRecallNotification(
+        booking.customer.phone,
+        booking.bookingId,
+        estimatedMinutes
+      );
+      console.log('✓ Recall notification SMS sent successfully to:', booking.customer.phone);
+    } catch (smsError) {
+      console.error('✗ Failed to send recall SMS to:', booking.customer.phone, smsError.message);
+    }
+
+    console.log('=== Arrival Time Set Complete ===\n');
 
     res.json({ 
       message: 'Estimated arrival time set',
@@ -412,60 +461,82 @@ router.post('/:id/estimate-arrival', auth, authorize('driver'), async (req, res)
 // Driver: Mark as Arrived
 router.post('/:id/arrived', auth, authorize('driver'), async (req, res) => {
   try {
-    console.log('Mark arrived request:', { 
-      bookingId: req.params.id, 
-      userId: req.user._id, 
-      userRole: req.user.role 
-    });
+    console.log('=== Driver Marking as Arrived ===');
+    console.log('Booking ID:', req.params.id);
+    console.log('Driver:', { id: req.user._id, role: req.user.role });
     
     const booking = await Booking.findById(req.params.id);
 
     if (!booking) {
-      console.log('Booking not found:', req.params.id);
+      console.log('✗ Booking not found:', req.params.id);
       return res.status(404).json({ message: 'Booking not found' });
     }
 
     console.log('Booking found:', { 
+      bookingId: booking.bookingId,
       bookingDriver: booking.driver.toString(), 
       requestUser: req.user._id.toString() 
     });
 
     if (booking.driver.toString() !== req.user._id.toString()) {
-      console.log('Unauthorized: Driver mismatch');
+      console.log('✗ Unauthorized: Driver mismatch');
       return res.status(403).json({ message: 'Unauthorized' });
     }
 
     // Generate OTP for verification
     const otp = generateOTP();
+    console.log('OTP generated for booking:', booking.bookingId);
+    console.log('OTP:', otp); // In production, consider masking this
+    
     booking.status = 'arrived';
     booking.recall.arrivedAt = new Date();
     booking.verification.otp = otp;
     booking.verification.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     await booking.save();
 
-    // Notify customer
+    console.log('Booking status updated to arrived');
+    console.log('OTP expiry set to:', booking.verification.otpExpiry);
+
+    // Notify customer via socket
     const io = req.app.get('io');
     io.to(`customer-${booking.customer.phone}`).emit('car-arrived', {
       bookingId: booking.bookingId,
       otp
     });
+    console.log('Arrival notification sent to customer via socket');
 
     // Send Email with OTP (if email available)
     if (booking.customer.email) {
-      await emailService.sendArrivalNotification(
-        booking.customer.email,
-        booking.customer.name,
-        booking.bookingId,
-        otp
-      );
+      console.log(`Sending arrival notification email with OTP to: ${booking.customer.email}`);
+      try {
+        await emailService.sendArrivalNotification(
+          booking.customer.email,
+          booking.customer.name,
+          booking.bookingId,
+          otp
+        );
+        console.log('✓ Arrival notification email with OTP sent successfully to:', booking.customer.email);
+      } catch (emailError) {
+        console.error('✗ Failed to send arrival email to:', booking.customer.email, emailError.message);
+      }
+    } else {
+      console.log('No email available - skipping email notification');
     }
 
     // Send SMS with OTP (backup or primary if no email)
-    await smsService.sendArrivalNotification(
-      booking.customer.phone,
-      booking.bookingId,
-      otp
-    );
+    console.log(`Sending arrival notification SMS with OTP to: ${booking.customer.phone}`);
+    try {
+      await smsService.sendArrivalNotification(
+        booking.customer.phone,
+        booking.bookingId,
+        otp
+      );
+      console.log('✓ Arrival notification SMS with OTP sent successfully to:', booking.customer.phone);
+    } catch (smsError) {
+      console.error('✗ Failed to send arrival SMS to:', booking.customer.phone, smsError.message);
+    }
+
+    console.log('=== Driver Arrival Complete ===\n');
 
     res.json({ 
       message: 'Arrival confirmed. OTP sent to customer.',
@@ -493,24 +564,36 @@ router.post('/:id/verify-complete', auth, authorize('driver'),
       }
 
       const { otp, paymentMethod, amount } = req.body;
+      
+      console.log('=== Verifying OTP and Completing Booking ===');
+      console.log('Booking ID:', req.params.id);
+      console.log('Payment:', { method: paymentMethod, amount });
+      
       const booking = await Booking.findById(req.params.id);
 
       if (!booking) {
+        console.log('✗ Booking not found:', req.params.id);
         return res.status(404).json({ message: 'Booking not found' });
       }
 
       if (booking.driver.toString() !== req.user._id.toString()) {
+        console.log('✗ Unauthorized: Driver mismatch');
         return res.status(403).json({ message: 'Unauthorized' });
       }
 
       // Verify OTP
+      console.log('Verifying OTP...');
       if (booking.verification.otp !== otp) {
+        console.log('✗ Invalid OTP provided');
         return res.status(401).json({ message: 'Invalid OTP' });
       }
 
       if (new Date() > booking.verification.otpExpiry) {
+        console.log('✗ OTP has expired');
         return res.status(401).json({ message: 'OTP expired' });
       }
+
+      console.log('✓ OTP verified successfully');
 
       // Complete booking
       booking.status = 'completed';
@@ -521,11 +604,21 @@ router.post('/:id/verify-complete', auth, authorize('driver'),
       booking.parking.actualEndTime = new Date();
       await booking.save();
 
-      // Notify customer
+      console.log('✓ Booking completed:', {
+        bookingId: booking.bookingId,
+        paymentMethod,
+        amount: parseFloat(amount),
+        completedAt: booking.parking.actualEndTime
+      });
+
+      // Notify customer via socket
       const io = req.app.get('io');
       io.to(`customer-${booking.customer.phone}`).emit('booking-completed', {
         bookingId: booking.bookingId
       });
+      console.log('Completion notification sent to customer via socket');
+
+      console.log('=== Booking Completion Process Finished ===\n');
 
       res.json({ 
         message: 'Booking completed successfully',
