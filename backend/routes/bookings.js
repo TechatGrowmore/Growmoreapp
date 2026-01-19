@@ -115,11 +115,19 @@ router.post('/',
 
       // Generate direct access link with token
       const accessLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/customer/access/${booking.accessToken}`;
-      console.log('Access link generated:', accessLink);
+      console.log('📱 Access link generated:', accessLink);
+      console.log('🔑 Access Token:', booking.accessToken);
 
       // Send Email to customer (if email provided)
       if (customerEmail) {
-        console.log(`Sending booking confirmation email to: ${customerEmail}`);
+        console.log(`\n📧 SENDING BOOKING CONFIRMATION EMAIL`);
+        console.log('To:', customerEmail);
+        console.log('Customer Name:', customerName);
+        console.log('Booking ID:', booking.bookingId);
+        console.log('Vehicle Number:', vehicleNumber);
+        console.log('Venue:', venue || 'Not specified');
+        console.log('Access Link:', accessLink);
+        console.log('---');
         try {
           await emailService.sendBookingConfirmation(
             customerEmail,
@@ -138,7 +146,13 @@ router.post('/',
       }
 
       // Send SMS to customer (backup notification or primary if no email)
-      console.log(`Sending booking confirmation SMS to: ${customerPhone}`);
+      console.log(`\n📱 SENDING BOOKING CONFIRMATION SMS`);
+      console.log('To:', customerPhone);
+      console.log('Booking ID:', booking.bookingId);
+      console.log('Access Link:', accessLink);
+      console.log('Message: Your vehicle parking confirmed! Booking ID:', booking.bookingId);
+      console.log('Track & manage: ' + accessLink);
+      console.log('---');
       try {
         await smsService.sendBookingConfirmation(customerPhone, booking.bookingId, accessLink);
         console.log('✓ Booking confirmation SMS sent successfully to:', customerPhone);
@@ -419,7 +433,13 @@ router.post('/:id/estimate-arrival', auth, authorize('driver'), async (req, res)
 
     // Send Email notification (if email available)
     if (booking.customer.email) {
-      console.log(`Sending recall notification email to: ${booking.customer.email}`);
+      console.log(`\n📧 SENDING RECALL NOTIFICATION EMAIL`);
+      console.log('To:', booking.customer.email);
+      console.log('Customer Name:', booking.customer.name);
+      console.log('Booking ID:', booking.bookingId);
+      console.log('Estimated Arrival:', estimatedMinutes, 'minutes');
+      console.log('Message: Your car is on the way! ETA:', estimatedMinutes, 'minutes');
+      console.log('---');
       try {
         await emailService.sendRecallNotification(
           booking.customer.email,
@@ -436,7 +456,12 @@ router.post('/:id/estimate-arrival', auth, authorize('driver'), async (req, res)
     }
 
     // Send SMS notification (backup or primary if no email)
-    console.log(`Sending recall notification SMS to: ${booking.customer.phone}`);
+    console.log(`\n📱 SENDING RECALL NOTIFICATION SMS`);
+    console.log('To:', booking.customer.phone);
+    console.log('Booking ID:', booking.bookingId);
+    console.log('Estimated Arrival:', estimatedMinutes, 'minutes');
+    console.log('Message: Your car is on the way! Booking:', booking.bookingId, '| ETA:', estimatedMinutes, 'min');
+    console.log('---');
     try {
       await smsService.sendRecallNotification(
         booking.customer.phone,
@@ -487,8 +512,9 @@ router.post('/:id/arrived', auth, authorize('driver'), async (req, res) => {
 
     // Generate OTP for verification
     const otp = generateOTP();
-    console.log('OTP generated for booking:', booking.bookingId);
-    console.log('OTP:', otp); // In production, consider masking this
+    console.log('🔐 OTP GENERATED');
+    console.log('OTP:', otp);
+    console.log('OTP Expiry: 10 minutes from now');
     
     booking.status = 'arrived';
     booking.recall.arrivedAt = new Date();
@@ -509,7 +535,14 @@ router.post('/:id/arrived', auth, authorize('driver'), async (req, res) => {
 
     // Send Email with OTP (if email available)
     if (booking.customer.email) {
-      console.log(`Sending arrival notification email with OTP to: ${booking.customer.email}`);
+      console.log(`\n📧 SENDING ARRIVAL NOTIFICATION EMAIL WITH OTP`);
+      console.log('To:', booking.customer.email);
+      console.log('Customer Name:', booking.customer.name);
+      console.log('Booking ID:', booking.bookingId);
+      console.log('OTP:', otp);
+      console.log('Message: Your car has arrived! Use OTP', otp, 'to collect your vehicle');
+      console.log('Valid for: 10 minutes');
+      console.log('---');
       try {
         await emailService.sendArrivalNotification(
           booking.customer.email,
@@ -526,7 +559,12 @@ router.post('/:id/arrived', auth, authorize('driver'), async (req, res) => {
     }
 
     // Send SMS with OTP (backup or primary if no email)
-    console.log(`Sending arrival notification SMS with OTP to: ${booking.customer.phone}`);
+    console.log(`\n📱 SENDING ARRIVAL NOTIFICATION SMS WITH OTP`);
+    console.log('To:', booking.customer.phone);
+    console.log('Booking ID:', booking.bookingId);
+    console.log('OTP:', otp);
+    console.log('Message: Your car has arrived! Booking:', booking.bookingId, '| OTP:', otp, '| Valid for 10 min');
+    console.log('---');
     try {
       await smsService.sendArrivalNotification(
         booking.customer.phone,
@@ -569,6 +607,7 @@ router.post('/:id/verify-complete', auth, authorize('driver'),
       
       console.log('=== Verifying OTP and Completing Booking ===');
       console.log('Booking ID:', req.params.id);
+      console.log('Received OTP:', otp);
       console.log('Payment:', { method: paymentMethod, amount });
       
       const booking = await Booking.findById(req.params.id);
@@ -585,6 +624,11 @@ router.post('/:id/verify-complete', auth, authorize('driver'),
 
       // Verify OTP
       console.log('Verifying OTP...');
+      console.log('Expected OTP:', booking.verification.otp);
+      console.log('Received OTP:', otp);
+      console.log('OTP Expiry:', booking.verification.otpExpiry);
+      console.log('Current Time:', new Date());
+      
       if (booking.verification.otp !== otp) {
         console.log('✗ Invalid OTP provided');
         return res.status(401).json({ message: 'Invalid OTP' });
