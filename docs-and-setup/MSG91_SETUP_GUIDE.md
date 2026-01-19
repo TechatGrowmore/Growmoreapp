@@ -1,4 +1,4 @@
-# MSG91 SMS Integration Guide for Valetez
+# MSG91 SMS Integration Guide for growmore
 
 ## Why MSG91?
 
@@ -18,7 +18,7 @@ MSG91 is the **most affordable** SMS service for India with:
 3. Enter your details:
    - Email address
    - Password
-   - Company name: `Valetez`
+   - Company name: `growmore`
 4. Verify your email
 5. Complete mobile verification
 
@@ -56,7 +56,7 @@ MSG91 is the **most affordable** SMS service for India with:
 2. Click **Create Template**
 3. Template example for OTP:
    ```
-   Your Valetez verification OTP is: ##var1##. Valid for 10 minutes. Do not share this code.
+   Your growmore verification OTP is: ##var1##. Valid for 10 minutes. Do not share this code.
    ```
 4. Submit for approval
 5. Copy Template ID once approved

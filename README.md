@@ -1,8 +1,8 @@
-# Valetez - Valet Parking Management System
+# growmore - Valet Parking Management System
 
 A professional web-based valet parking management system built with the MERN stack.
 
-![Valetez](https://img.shields.io/badge/Version-1.0.0-orange) ![License](https://img.shields.io/badge/License-MIT-blue) ![Node](https://img.shields.io/badge/Node-16+-green)
+![growmore](https://img.shields.io/badge/Version-1.0.0-orange) ![License](https://img.shields.io/badge/License-MIT-blue) ![Node](https://img.shields.io/badge/Node-16+-green)
 
 ## ✨ Features
 
@@ -62,7 +62,7 @@ cp frontend/.env.example frontend/.env
 
 1. **Update `backend/.env`**:
    ```env
-   MONGODB_URI=mongodb://localhost:27017/valetez
+   MONGODB_URI=mongodb://localhost:27017/growmore
    # Or use MongoDB Atlas connection string
    ```
 
@@ -324,7 +324,7 @@ This is a professional project. To contribute:
 
 MIT License - Free to use and modify
 
-Copyright (c) 2026 Valetez
+Copyright (c) 2026 growmore
 
 ## 🆘 Support
 

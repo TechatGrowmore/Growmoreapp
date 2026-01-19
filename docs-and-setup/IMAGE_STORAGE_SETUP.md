@@ -7,18 +7,18 @@ Car images are stored locally on your drive to avoid exceeding MongoDB's free ti
 
 ### 1. Choose Your Storage Location
 Pick a location on your drive where you want to store car images. Examples:
-- **Windows**: `D:\Valetez\car-images` or `E:\Projects\Valetez\uploads`
-- **Linux/Mac**: `/home/user/valetez/car-images` or `/mnt/storage/valetez-images`
+- **Windows**: `D:\growmore\car-images` or `E:\Projects\growmore\uploads`
+- **Linux/Mac**: `/home/user/growmore/car-images` or `/mnt/storage/growmore-images`
 
 ### 2. Update Environment Variable
 Edit `backend/.env` and set the `IMAGE_STORAGE_PATH`:
 
 ```env
 # Example for Windows
-IMAGE_STORAGE_PATH=D:/Valetez/car-images
+IMAGE_STORAGE_PATH=D:/growmore/car-images
 
 # Example for Linux/Mac
-IMAGE_STORAGE_PATH=/home/user/valetez/car-images
+IMAGE_STORAGE_PATH=/home/user/growmore/car-images
 ```
 
 **Note**: Use forward slashes `/` even on Windows, or double backslashes `\\`

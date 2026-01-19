@@ -1,4 +1,4 @@
-# Valetez Deployment Guide
+# growmore Deployment Guide
 
 ## Deploying to Render (Free Tier)
 
@@ -15,7 +15,7 @@
 4. Whitelist all IP addresses (0.0.0.0/0) for Render
 5. Get your connection string:
    ```
-   mongodb+srv://username:password@cluster.mongodb.net/valetez?retryWrites=true&w=majority
+   mongodb+srv://username:password@cluster.mongodb.net/growmore?retryWrites=true&w=majority
    ```
 
 ### Step 2: Push to GitHub
@@ -35,7 +35,7 @@ git push -u origin main
 2. Click "New +" → "Web Service"
 3. Connect your GitHub repository
 4. Configure:
-   - **Name**: valetez-app
+   - **Name**: growmore-app
    - **Region**: Choose closest to you
    - **Branch**: main
    - **Root Directory**: (leave empty)
@@ -101,7 +101,7 @@ npm run install-all
 **backend/.env**:
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/valetez
+MONGODB_URI=mongodb://localhost:27017/growmore
 JWT_SECRET=local_dev_secret_key_change_in_production
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000

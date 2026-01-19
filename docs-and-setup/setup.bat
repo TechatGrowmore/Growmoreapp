@@ -1,7 +1,7 @@
 @echo off
 echo.
 echo ======================================
-echo   VALETEZ - Setup Script
+echo   growmore - Setup Script
 echo ======================================
 echo.
 

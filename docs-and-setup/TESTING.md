@@ -1,4 +1,4 @@
-# Valetez Testing Guide
+# growmore Testing Guide
 
 ## Testing Checklist
 

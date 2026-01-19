@@ -1,7 +1,7 @@
 {
-  "name": "valetez-root",
+  "name": "growmore-root",
   "version": "1.0.0",
-  "description": "Valetez Valet Parking Management System",
+  "description": "growmore Valet Parking Management System",
   "scripts": {
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "dev": "concurrently \"npm run server\" \"npm run client\"",

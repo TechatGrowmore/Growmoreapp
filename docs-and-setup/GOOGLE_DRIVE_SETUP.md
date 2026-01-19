@@ -1,4 +1,4 @@
-# Google Drive Setup for Valetez Car Images
+# Google Drive Setup for growmore Car Images
 
 ## Overview
 Your car images will be automatically uploaded to your Google Drive folder:
@@ -17,7 +17,7 @@ Benefits:
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Click "Select a project" → "New Project"
-3. Name it: **Valetez** → Click "Create"
+3. Name it: **growmore** → Click "Create"
 4. Wait for project creation (30 seconds)
 
 ### Step 2: Enable Google Drive API
@@ -32,7 +32,7 @@ Benefits:
 1. Go to **"APIs & Services"** → **"Credentials"**
 2. Click **"Create Credentials"** → **"Service Account"**
 3. Fill in:
-   - **Service account name**: `valetez-storage`
+   - **Service account name**: `growmore-storage`
    - **Service account ID**: (auto-generated)
 4. Click **"Create and Continue"**
 5. **Role**: Select **"Editor"** (or "Owner")
@@ -52,13 +52,13 @@ Benefits:
 
 1. Open your Drive folder: https://drive.google.com/drive/folders/1bEzlAaDsu0aNKflPUf-ajR2pI4LTwgnD
 2. Click **"Share"** (top right)
-3. Copy the **service account email** from the JSON file (looks like: `valetez-storage@projectname.iam.gserviceaccount.com`)
+3. Copy the **service account email** from the JSON file (looks like: `growmore-storage@projectname.iam.gserviceaccount.com`)
 4. Paste it in the share box
 5. Set permission to **"Editor"**
 6. **Uncheck** "Notify people"
 7. Click **"Share"**
 
-### Step 6: Configure Valetez
+### Step 6: Configure growmore
 
 1. Open the downloaded JSON file in a text editor
 2. **Copy the entire contents** (it should look like this):
@@ -68,7 +68,7 @@ Benefits:
   "project_id": "your-project-id",
   "private_key_id": "...",
   "private_key": "-----BEGIN PRIVATE KEY-----\n...",
-  "client_email": "valetez-storage@...",
+  "client_email": "growmore-storage@...",
   "client_id": "...",
   ...
 }

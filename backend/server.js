@@ -96,7 +96,7 @@ app.use("/uploads", express.static(UPLOAD_PATH));
 
 // ✅ Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "Valetez API is running ✅" });
+  res.json({ status: "OK", message: "growmore API is running ✅" });
 });
 
 // ✅ TEST EMAIL API (Brevo API mode)

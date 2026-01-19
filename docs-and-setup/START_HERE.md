@@ -1,6 +1,6 @@
-# 🚀 VALETEZ - START HERE!
+# 🚀 growmore - START HERE!
 
-## Welcome to Your Valetez Valet Parking Management System!
+## Welcome to Your growmore Valet Parking Management System!
 
 This is a **complete, production-ready** web application built with the MERN stack.
 
@@ -87,7 +87,7 @@ Once running, open: **http://localhost:3000**
 ## 📂 PROJECT STRUCTURE
 
 ```
-Valetez/
+growmore/
 ├── 📄 START_HERE.md          ← You are here!
 ├── 📄 QUICKSTART.md           ← 5-minute setup guide
 ├── 📄 README.md               ← Full documentation
@@ -226,7 +226,7 @@ check.bat
 ### Backend (.env already created)
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/valetez
+MONGODB_URI=mongodb://localhost:27017/growmore
 JWT_SECRET=your_secret_key
 FRONTEND_URL=http://localhost:3000
 ```

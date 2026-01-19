@@ -92,22 +92,22 @@ class SMSService {
   }
 
   async sendOTP(phone, otp) {
-    const message = `Your Valetez verification OTP is: ${otp}. Valid for 10 minutes. Do not share this code.`;
+    const message = `Your growmore verification OTP is: ${otp}. Valid for 10 minutes. Do not share this code.`;
     return this.sendSimpleSMS(phone, message);
   }
 
   async sendBookingConfirmation(phone, bookingId, recallLink) {
-    const message = `Valetez: Your booking ${bookingId} is confirmed! Track and recall your car: ${recallLink}`;
+    const message = `growmore: Your booking ${bookingId} is confirmed! Track and recall your car: ${recallLink}`;
     return this.sendSimpleSMS(phone, message);
   }
 
   async sendRecallNotification(phone, bookingId, estimatedTime) {
-    const message = `Valetez: Your car (${bookingId}) will arrive in ${estimatedTime} minutes.`;
+    const message = `growmore: Your car (${bookingId}) will arrive in ${estimatedTime} minutes.`;
     return this.sendSimpleSMS(phone, message);
   }
 
   async sendArrivalNotification(phone, bookingId, otp) {
-    const message = `Valetez: Your car has arrived! Your verification OTP: ${otp}`;
+    const message = `growmore: Your car has arrived! Your verification OTP: ${otp}`;
     return this.sendSimpleSMS(phone, message);
   }
 }

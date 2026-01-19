@@ -1,4 +1,4 @@
-# 🚗 Valetez - Quick Start Guide
+# 🚗 growmore - Quick Start Guide
 
 ## 🎯 What You Have
 
@@ -95,7 +95,7 @@ Works on: Heroku, Railway, Vercel (backend on Vercel Functions), AWS, etc.
 ## 📂 Project Structure
 
 ```
-Valetez/
+growmore/
 ├── backend/              # Node.js + Express API
 │   ├── models/          # MongoDB models
 │   ├── routes/          # API endpoints
@@ -266,6 +266,6 @@ MIT License - Free to use and modify
 
 ---
 
-**Made with ❤️ for Valetez**
+**Made with ❤️ for growmore**
 
 Happy Coding! 🚀

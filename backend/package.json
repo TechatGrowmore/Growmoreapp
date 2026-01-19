@@ -1,7 +1,7 @@
 {
-  "name": "valetez-backend",
+  "name": "growmore-backend",
   "version": "1.0.0",
-  "description": "Backend API for Valetez",
+  "description": "Backend API for growmore",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

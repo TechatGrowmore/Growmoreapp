@@ -1,7 +1,7 @@
 @echo off
 echo.
 echo =========================================
-echo   VALETEZ - System Check
+echo   growmore - System Check
 echo =========================================
 echo.
 
@@ -106,7 +106,7 @@ if defined ERRORS (
     echo   STATUS: ALL CHECKS PASSED!
     echo =========================================
     echo.
-    echo Your system is ready to run Valetez.
+    echo Your system is ready to run growmore.
     echo.
     echo Next steps:
     echo   1. Ensure backend/.env has your MongoDB URI

@@ -1,4 +1,4 @@
-# Email Setup Guide for Valetez (GoDaddy/SecureServer)
+# Email Setup Guide for growmore (GoDaddy/SecureServer)
 
 ## 📧 Setting up tech@growmoreparking.com for Email Sending
 
@@ -23,7 +23,7 @@ EMAIL_PORT=465
 EMAIL_USER=tech@growmoreparking.com
 EMAIL_PASS=your_actual_email_password
 EMAIL_FROM=tech@growmoreparking.com
-EMAIL_FROM_NAME=Valetez Parking
+EMAIL_FROM_NAME=growmore Parking
 ```
 
 **That's it! No App Passwords or 2FA needed.**
@@ -51,7 +51,7 @@ Create a booking and emails will send!
 | **Rate limit** | ~100/hour |
 | **Attachment size** | 20 MB |
 
-**For Valetez:**
+**For growmore:**
 - 100 bookings/day = 400 emails/day ✅ (within limit for most plans)
 - If you hit limits, contact GoDaddy to increase
 

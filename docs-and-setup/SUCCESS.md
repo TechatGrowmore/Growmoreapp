@@ -1,6 +1,6 @@
 # 🎉 CONGRATULATIONS!
 
-## Your Valetez Valet Parking Management System is Ready!
+## Your growmore Valet Parking Management System is Ready!
 
 ### 📦 What's Been Created
 
@@ -16,7 +16,7 @@ A complete, production-ready application with:
 - Input validation
 
 #### ✅ Frontend (React)
-- Splash screen with Valetez animation
+- Splash screen with growmore animation
 - Driver/Supervisor login page
 - Customer OTP login
 - Driver Dashboard:
