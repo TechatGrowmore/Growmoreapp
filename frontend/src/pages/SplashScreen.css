@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #ffffff 0%, #fff5f2 100%);
+  background: #ffffff;
   overflow: hidden;
   position: relative;
 }
@@ -34,6 +34,17 @@
 
 .logo-container {
   margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container video {
+  width: 420px;
+  max-width: 90vw;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 6px 36px rgba(0,0,0,0.06);
 }
 
 .logo-icon {

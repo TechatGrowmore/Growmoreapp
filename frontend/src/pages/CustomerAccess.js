@@ -61,16 +61,8 @@ const CustomerAccess = () => {
           className="login-header"
         >
           <div className="logo-small">
-            <svg width="60" height="60" viewBox="0 0 120 120" fill="none">
-              <circle cx="60" cy="60" r="55" stroke="#FF6B35" strokeWidth="4" />
-              <path d="M40 50 L60 30 L80 50" stroke="#FF6B35" strokeWidth="6" strokeLinecap="round" />
-              <rect x="35" y="50" width="50" height="35" rx="4" fill="#FF6B35" />
-              <circle cx="45" cy="75" r="8" fill="#fff" />
-              <circle cx="75" cy="75" r="8" fill="#fff" />
-            </svg>
+            <img src={require('../logo.png')} alt="Logo" style={{ width: '240px', height: 'auto', objectFit: 'contain' }} />
           </div>
-          <h1>GrowMore</h1>
-          
           {loading && (
             <motion.div
               animate={{ rotate: 360 }}
