@@ -6,6 +6,7 @@ import { useSocket } from '../context/SocketContext';
 import toast from 'react-hot-toast';
 import { LogOut, Car, Clock, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '../services/api';
+import logo from '../logo.png';
 import './CustomerDashboard.css';
 
 const CustomerDashboard = () => {
@@ -106,7 +107,11 @@ const CustomerDashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-left">
-          <Car size={28} color="#FF6B35" />
+          <img
+            src={logo}
+            alt="GrowMore Logo"
+            style={{ width: '40px', height: 'auto', objectFit: 'contain' }}
+          />
           <div>
             <h2>My Bookings</h2>
             <p>{user?.name || user?.phone}</p>

@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import toast from 'react-hot-toast';
-import { Home, PlusCircle, List, LogOut, Car, Clock, Bell } from 'lucide-react';
+import { Home, PlusCircle, List, LogOut, Clock, Bell } from 'lucide-react';
 import api from '../services/api';
+import logo from '../logo.png';
 import './DriverDashboard.css';
 
 // Components
@@ -76,7 +77,11 @@ const DriverDashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-left">
-          <Car size={28} color="#FF6B35" />
+          <img
+            src={logo}
+            alt="GrowMore Logo"
+            style={{ width: '40px', height: 'auto', objectFit: 'contain' }}
+          />
           <div>
             <h2>GrowMore Driver</h2>
             <p>{user?.name}</p>
